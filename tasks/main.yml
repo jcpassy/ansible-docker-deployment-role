@@ -1,0 +1,8 @@
+---
+# tasks file for ansible-docker-role
+
+- include_tasks: check_vars.yml
+- include_tasks: install_docker_api.yml
+  when: docker_install_remote_api
+- include_tasks: login_registry.yml
+- include_tasks: start_container.yml

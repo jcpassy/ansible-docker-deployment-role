@@ -1,0 +1,22 @@
+- name: '[DOCKER] Pull image from registry'
+  docker_image:
+    name: "{{ docker_registry }}/{{ docker_image }}"
+    source: pull
+
+- name: '[DOCKER] Start container'
+  docker_container:
+    name: "{{ docker_container }}"
+    image: "{{ docker_registry }}/{{ docker_image }}"
+    user: "{{ docker_container_user }}"
+    state: started
+    tty: yes
+    restart: yes
+    init: yes
+    volumes: "{{ docker_shared_mounts }}"
+    published_ports: "{{ docker_published_ports }}"
+  tags:
+    - always
+
+- name: '[DOCKER] Check that mounts are accessible from container'
+  command: docker exec "{{ docker_container }}" bash -c "ls {{ item.split(':')[1] }}"
+  loop: "{{ docker_shared_mounts }}"

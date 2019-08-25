@@ -1,0 +1,21 @@
+#
+# Checking that required variables are set
+#
+
+- name: '[DOCKER] Checking that required variables are set'
+  fail:
+    msg: "Variable {{ item }} is not defined"
+  when: vars[item] is undefined
+  loop:
+    - docker_registry
+    - docker_registry_user
+    - docker_registry_passwd
+    - docker_image
+    - docker_container
+    - docker_container_user
+    - docker_shared_mounts
+    - docker_published_ports
+    - docker_install_remote_api
+    - docker_remote_api_port
+  tags:
+    - always

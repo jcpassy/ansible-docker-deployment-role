@@ -1,0 +1,34 @@
+# Install Docker.io
+- name: '[DOCKER] Install Docker.io'
+  apt:
+    name: docker.io
+    update_cache: yes
+    state: present
+    cache_valid_time: 86400
+
+# Setup Docker Remote API
+# from https://medium.com/@sudarakayasindu/enabling-and-accessing-docker-engine-api-on-a-remote-docker-host-on-ubuntu-16-04-2c15f55f5d39
+- name: '[DOCKER] Edit service file'
+  lineinfile:
+    path: /lib/systemd/system/docker.service
+    regexp: "ExecStart=*."
+    line: "ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:{{ docker_remote_api_port }}"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: '[DOCKER] Reload the daemons'
+  systemd:
+    daemon_reload: yes
+
+- name: '[DOCKER] Restart Docker service'
+  service:
+    name: docker
+    state: restarted
+
+- name: '[DOCKER] Check Docker Remote API is accessible'
+  uri:
+    url: http://localhost:{{ docker_remote_api_port }}/version
+    return_content: yes
+    force: yes
+    body_format: json

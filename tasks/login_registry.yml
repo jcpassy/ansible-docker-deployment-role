@@ -1,0 +1,33 @@
+- name: '[DOCKER] Install pip for python3'
+  apt:
+    name: python3-pip
+    update_cache: yes
+    state: present
+    cache_valid_time: 86400
+
+- name: '[DOCKER] Install Docker SDK for Python'
+  command: pip3 install docker
+
+- name: '[DOCKER] Create directory for docker certificate if does not exists'
+  file:
+    path: "/etc/docker/certs.d/{{ docker_registry }}"
+    state: directory
+  when:
+    - docker_registry_certificate is defined
+    - docker_registry is defined
+
+- name: '[DOCKER] Install certificate'
+  copy:
+    content: "{{ docker_registry_certificate }}"
+    dest: /etc/docker/certs.d/{{ docker_registry }}/ca.crt
+    owner: root
+    group: root
+    mode: '0644'
+  when: docker_registry_certificate is defined
+
+- name: '[DOCKER] Log into registry'
+  docker_login:
+    registry: "{{ docker_registry }}"
+    username: "{{ docker_registry_user }}"
+    password: "{{ docker_registry_passwd }}"
+    reauthorize: yes

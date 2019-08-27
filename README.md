@@ -22,7 +22,7 @@ Role Variables
 | docker_container_user | root:root | User running the container. |
 | docker_shared_mounts | [] | Volumes to mount within the container. For the syntax, see the [docker_container](https://docs.ansible.com/ansible/latest/modules/docker_container_module.html) documentation. |
 | docker_published_ports | [] | Ports to publish from the container to the host. or the syntax, see the [docker_container](https://docs.ansible.com/ansible/latest/modules/docker_container_module.html) documentation. |
-| docker_install_remote_api | true | Whether to install the Docker Remote API via TCP. |
+| docker_install_remote_api | true | Whether to install the Docker Remote API that allows connection to the Docker container via TCP. |
 | docker_remote_api_port | 4243 | Port used to connect to the remote docker host with the Docker Engine API. |
 
 Example Playbook
